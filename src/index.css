@@ -3,4 +3,11 @@
 @tailwind utilities;
 
 @layer components {
+	.bg-gray {
+		background-color: #333333;
+	}
+
+	.bg-accent {
+		background-color: #ffa500;
+	}
 }
