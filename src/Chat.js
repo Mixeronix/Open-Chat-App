@@ -10,9 +10,9 @@ export default function Chat() {
 		getUid();
 	}, []);
 	return (
-		<div className="bg-gray w-full h-screen ">
-			<header className="border-b-2 bg-accent border-black py-5 items-center px-10 flex">
-				<span className="text-5xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
+		<div className="w-full h-screen ">
+			<header className="border-b-2 bg-accent border-black py-4 items-center px-10 flex ">
+				<span className="text-4xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
 				<button
 					onClick={() => {
 						Cookies.remove("user");
@@ -25,7 +25,20 @@ export default function Chat() {
 				</button>
 			</header>
 
-			<main id="mainChat"></main>
+			<main className="p-10 bg-gray min-h-full flex flex-col">
+				<Message owns={false} />
+				<Message owns={true} />
+				<Message owns={false} />
+			</main>
+		</div>
+	);
+}
+
+function Message({ owns }) {
+	return (
+		<div className={`flex mb-10 ${owns ? "self-end flex-row-reverse" : "self-start flex-row"}`}>
+			<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${Math.random()}`} />
+			<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}></span>
 		</div>
 	);
 }

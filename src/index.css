@@ -10,4 +10,11 @@
 	.bg-accent {
 		background-color: #ffa500;
 	}
+
+	.rounded-left {
+		border-radius: 0.7rem 1.35rem 1.35rem 0.7rem;
+	}
+	.rounded-right {
+		border-radius: 1.35rem 0.7rem 0.7rem 1.35rem;
+	}
 }
