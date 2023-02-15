@@ -1,13 +1,14 @@
 name: ChatApp
 
-on:
-    push:
-        branches:
-            - main
-
+on: push
 jobs:
-    deployment:
-        runs-on: ubuntu-latest
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: 
+            echo "WORKS!"
+
         env:
             REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
             REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
