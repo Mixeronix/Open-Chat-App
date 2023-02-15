@@ -25,12 +25,14 @@ export default function Chat() {
 	}, []);
 
 	const addMessage = async () => {
-		setMessage("");
-		await addDoc(collection(db, "Messages"), {
-			author: userUid,
-			createdAt: serverTimestamp(),
-			text: message,
-		});
+		if (message.trim() !== "") {
+			setMessage("");
+			await addDoc(collection(db, "Messages"), {
+				author: userUid,
+				createdAt: serverTimestamp(),
+				text: message.trim(),
+			});
+		}
 	};
 
 	return (
@@ -62,7 +64,7 @@ export default function Chat() {
 
 			<form className="sticky bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
 				<input className="text-lg px-6 py-3 grow bg-gray-200" maxLength={1000} value={message} onChange={(e) => setMessage(e.target.value)} />
-				<button type="submit" className={`${!message ? "bg-gray-500" : "bg-accent"} px-5 py-2 transition-all`} disabled={!message}>
+				<button type="submit" className={`${!message.trim() ? "bg-gray-500" : "bg-accent"} px-5 py-2 transition-all`}>
 					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white">
 						<path d="M4.75 33.583V23.417L17.958 20 4.75 16.5V6.417L37 20Z" />
 					</svg>
@@ -74,26 +76,29 @@ export default function Chat() {
 }
 
 function Message({ owns, msg, sameAuthor }) {
+	const timeConverter = (UNIX_timestamp) => {
+		var a = new Date(UNIX_timestamp * 1000);
+		var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		var year = a.getFullYear();
+		var month = months[a.getMonth()];
+		var date = a.getDate();
+		var hour = a.getHours();
+		var min = a.getMinutes();
+		var sec = a.getSeconds();
+		var time = hour + ":" + min + ":" + sec + " | " + date + " " + month + " " + year;
+		return time;
+	};
+
 	if (sameAuthor) {
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
-				<div className="h-12 p-3 w-12 inline-block"> </div>
-				<span className={`p-3 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
+				<div className="h-12 p-3 w-12 inline-block"></div>
+				<span className={`p-3 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl break-words text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>
+					{msg.text}
+				</span>
 			</div>
 		);
 	} else {
-		const timeConverter = (UNIX_timestamp) => {
-			var a = new Date(UNIX_timestamp * 1000);
-			var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			var year = a.getFullYear();
-			var month = months[a.getMonth()];
-			var date = a.getDate();
-			var hour = a.getHours();
-			var min = a.getMinutes();
-			var sec = a.getSeconds();
-			var time = hour + ":" + min + ":" + sec + " | " + date + " " + month + " " + year;
-			return time;
-		};
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
 				<img className="h-12 w-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`} />
