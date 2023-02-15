@@ -9,20 +9,19 @@ export default function Chat() {
 	const [userUid, setUid] = useState();
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState([]);
-
-	onSnapshot(query(collection(db, "Messages"), orderBy("createdAt", "desc"), limit(50)), (querySnapshot) => {
-		const messages = [];
-		querySnapshot.forEach((doc) => {
-			messages.unshift(doc.data());
-		});
-		setMessages(messages);
-	});
-
 	useEffect(() => {
 		const getUid = async () => {
 			setUid(Cookies.get("user"));
 		};
 		getUid();
+
+		onSnapshot(query(collection(db, "Messages"), orderBy("createdAt", "desc"), limit(50)), (querySnapshot) => {
+			const messages = [];
+			querySnapshot.forEach((doc) => {
+				messages.unshift(doc.data());
+			});
+			setMessages(messages);
+		});
 	}, []);
 
 	const addMessage = async () => {
@@ -50,15 +49,20 @@ export default function Chat() {
 				</button>
 			</header>
 
-			<main className="p-10 bg-gray min-h-full flex flex-col">
-				{messages.map((msg) => (
-					<Message text={msg.text} owns={msg.author === userUid} uid={msg.author} key={msg.text + msg.author + Math.random()} />
+			<main className="px-7 pb-10 bg-gray min-h-full flex flex-col">
+				{messages.map((msg, index) => (
+					<Message
+						sameAuthor={index !== 0 ? messages[index].author === messages[index - 1].author : false}
+						owns={msg.author === userUid}
+						msg={msg}
+						key={msg.text + msg.author + Math.random()}
+					/>
 				))}
 			</main>
 
 			<form className="sticky bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
-				<input className="text-lg px-6 py-3 grow bg-gray-200" value={message} onChange={(e) => setMessage(e.target.value)} />
-				<button type="submit" className="bg-accent px-5 py-2">
+				<input className="text-lg px-6 py-3 grow bg-gray-200" maxLength={1000} value={message} onChange={(e) => setMessage(e.target.value)} />
+				<button type="submit" className={`${!message ? "bg-gray-500" : "bg-accent"} px-5 py-2 transition-all`} disabled={!message}>
 					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white">
 						<path d="M4.75 33.583V23.417L17.958 20 4.75 16.5V6.417L37 20Z" />
 					</svg>
@@ -69,11 +73,38 @@ export default function Chat() {
 	);
 }
 
-function Message({ owns, uid, text }) {
-	return (
-		<div className={`flex mb-7 ${owns ? "self-end flex-row-reverse" : "self-start flex-row"}`}>
-			<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${uid}`} />
-			<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{text}</span>
-		</div>
-	);
+function Message({ owns, msg, sameAuthor }) {
+	if (sameAuthor) {
+		return (
+			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+				<div className="h-12 p-3 w-12"> </div>
+				<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
+			</div>
+		);
+	} else {
+		const timeConverter = (UNIX_timestamp) => {
+			var a = new Date(UNIX_timestamp * 1000);
+			var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var year = a.getFullYear();
+			var month = months[a.getMonth()];
+			var date = a.getDate();
+			var hour = a.getHours();
+			var min = a.getMinutes();
+			var sec = a.getSeconds();
+			var time = hour + ":" + min + ":" + sec + " | " + date + " " + month + " " + year;
+			return time;
+		};
+		return (
+			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+				<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`} />
+
+				<div className="flex flex-col relative ">
+					<span className={`text-gray-300 px-3 pb-1 whitespace-nowrap text-xs opacity-70  absolute -top-5 ${owns ? "self-end" : "self-start"} `}>
+						{timeConverter(msg.createdAt.seconds)}
+					</span>
+					<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
+				</div>
+			</div>
+		);
+	}
 }
