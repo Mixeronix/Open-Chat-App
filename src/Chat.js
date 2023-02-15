@@ -37,21 +37,21 @@ export default function Chat() {
 
 	return (
 		<div className="w-full h-screen ">
-			<header className="border-b-2 bg-accent border-black py-4 items-center px-10 flex sticky top-0">
-				<span className="text-4xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
+			<header className="border-b-2 bg-accent border-black py-1 md:py-3 lg:py-4 items-center px-4 md:px-7 lg:px-10 flex fixed left-0 right-0 z-50 top-0">
+				<span className="text-2xl md:text-3xl lg:text-4xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
 				<button
 					onClick={() => {
 						Cookies.remove("user");
 						window.location.reload(false);
 					}}
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" fill="white">
+					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" fill="white" className="scale-50  lg:scale-75 xl:scale-100">
 						<path d="M8.95 43.25q-1.95 0-3.35-1.375Q4.2 40.5 4.2 38.55V9.45q0-1.95 1.4-3.35Q7 4.7 8.95 4.7h14.9v4.75H8.95v29.1h14.9v4.7Zm24.4-8.7-3.4-3.3 4.9-4.9H18.1v-4.7h16.65l-4.9-4.9 3.4-3.3 10.55 10.6Z" />
 					</svg>
 				</button>
 			</header>
 
-			<main className="px-7 pb-10 bg-gray min-h-full flex flex-col">
+			<main className="px-3 md:px-6 lg:px-7 pb-6 md:pb-8 lg:pb-10 bg-gray min-h-full flex flex-col">
 				{messages.map((msg, index) => (
 					<Message
 						sameAuthor={index !== 0 ? messages[index].author === messages[index - 1].author : false}
@@ -62,10 +62,15 @@ export default function Chat() {
 				))}
 			</main>
 
-			<form className="sticky bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
-				<input className="text-lg px-6 py-3 grow bg-gray-200" maxLength={1000} value={message} onChange={(e) => setMessage(e.target.value)} />
-				<button type="submit" className={`${!message.trim() ? "bg-gray-500" : "bg-accent"} px-5 py-2 transition-all`}>
-					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white">
+			<form className="fixed left-0 right-0 z-50 bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
+				<input
+					className=" px-3 md:px-5 lg:px-6 py-4 h-fit grow bg-gray-200 text-sm lg:text-lg"
+					maxLength={1000}
+					value={message}
+					onChange={(e) => setMessage(e.target.value)}
+				/>
+				<button type="submit" className={`${!message.trim() ? "bg-gray-500" : "bg-accent"} transition-all px-3  py-1 md:px-4`}>
+					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white" className="scale-75 md:scale-75">
 						<path d="M4.75 33.583V23.417L17.958 20 4.75 16.5V6.417L37 20Z" />
 					</svg>
 				</button>
@@ -92,22 +97,34 @@ function Message({ owns, msg, sameAuthor }) {
 	if (sameAuthor) {
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
-				<div className="h-12 p-3 w-12 inline-block"></div>
-				<span className={`p-3 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl break-words text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>
+				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
+				<spansm
+					className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl break-words text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
+						owns ? "rounded-right" : "rounded-left"
+					}`}
+				>
 					{msg.text}
-				</span>
+				</spansm>
 			</div>
 		);
 	} else {
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
-				<img className="h-12 w-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`} />
+				<img
+					className="h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
+					alt="Users avatar"
+					src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`}
+				/>
 
-				<div className="flex flex-col relative ">
-					<span className={`text-gray-300 px-3 pb-1 whitespace-nowrap text-xs opacity-70  absolute -top-5 ${owns ? "self-end" : "self-start"} `}>
+				<div className="flex flex-col relative">
+					<span className={`invisible sm:visible text-gray-300 px-3 pb-1 whitespace-nowrap text-xs opacity-70 absolute -top-5 ${owns ? "self-end" : "self-start"} `}>
 						{timeConverter(msg.createdAt.seconds)}
 					</span>
-					<span className={`p-3  max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>
+					<span
+						className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl  text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
+							owns ? "rounded-right" : "rounded-left"
+						}`}
+					>
 						{msg.text}
 					</span>
 				</div>

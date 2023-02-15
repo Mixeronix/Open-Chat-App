@@ -35,4 +35,8 @@
 	input:active {
 		outline: none;
 	}
+
+	.max-w-xxs {
+		max-width: 17rem /* 320px */;
+	}
 }
