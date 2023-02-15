@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import app from "./InitFirebase";
 import { getFirestore, collection, addDoc, serverTimestamp, orderBy, limit, query, onSnapshot } from "firebase/firestore";
@@ -6,9 +6,11 @@ import { getFirestore, collection, addDoc, serverTimestamp, orderBy, limit, quer
 const db = getFirestore(app);
 
 export default function Chat() {
+	const scroll = useRef(null);
 	const [userUid, setUid] = useState();
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState([]);
+
 	useEffect(() => {
 		const getUid = async () => {
 			setUid(Cookies.get("user"));
@@ -21,10 +23,13 @@ export default function Chat() {
 				messages.unshift(doc.data());
 			});
 			setMessages(messages);
+			scroll.current.scrollIntoView({ behavior: "smooth" });
 		});
 	}, []);
 
 	const addMessage = async () => {
+		scroll.current.scrollIntoView({ behavior: "smooth" });
+
 		if (message.trim() !== "") {
 			setMessage("");
 			await addDoc(collection(db, "Messages"), {
@@ -51,7 +56,7 @@ export default function Chat() {
 				</button>
 			</header>
 
-			<main className="px-3 md:px-6 lg:px-7 pb-6 md:pb-8 lg:pb-10 bg-gray min-h-full flex flex-col">
+			<main className="px-3 md:px-6 lg:px-7 py-14 md:py-20 bg-gray min-h-full flex flex-col">
 				{messages.map((msg, index) => (
 					<Message
 						sameAuthor={index !== 0 ? messages[index].author === messages[index - 1].author : false}
@@ -60,6 +65,7 @@ export default function Chat() {
 						key={msg.text + msg.author + Math.random()}
 					/>
 				))}
+				<div ref={scroll}></div>
 			</main>
 
 			<form className="fixed left-0 right-0 z-50 bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
@@ -97,13 +103,13 @@ function Message({ owns, msg, sameAuthor }) {
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
 				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
-				<spansm
+				<span
 					className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl break-words text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
 						owns ? "rounded-right" : "rounded-left"
 					}`}
 				>
 					{msg.text}
-				</spansm>
+				</span>
 			</div>
 		);
 	} else {
