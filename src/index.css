@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer components {
+	html,
+	body {
+		background-color: #333333;
+		overflow-x: hidden;
+	}
+
 	.bg-gray {
 		background-color: #333333;
 	}
@@ -16,5 +22,17 @@
 	}
 	.rounded-right {
 		border-radius: 1.35rem 0.7rem 0.7rem 1.35rem;
+	}
+
+	input {
+		border: none;
+		box-shadow: none;
+		text-shadow: none;
+	}
+	input:focus {
+		outline: none;
+	}
+	input:active {
+		outline: none;
 	}
 }

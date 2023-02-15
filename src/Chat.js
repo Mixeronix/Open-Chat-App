@@ -1,17 +1,42 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import app from "./InitFirebase";
+import { getFirestore, collection, addDoc, serverTimestamp, orderBy, limit, query, onSnapshot } from "firebase/firestore";
+
+const db = getFirestore(app);
 
 export default function Chat() {
-	var [userUid, setUid] = useState();
+	const [userUid, setUid] = useState();
+	const [message, setMessage] = useState("");
+	const [messages, setMessages] = useState([]);
+
+	onSnapshot(query(collection(db, "Messages"), orderBy("createdAt", "desc"), limit(50)), (querySnapshot) => {
+		const messages = [];
+		querySnapshot.forEach((doc) => {
+			messages.unshift(doc.data());
+		});
+		setMessages(messages);
+	});
+
 	useEffect(() => {
 		const getUid = async () => {
 			setUid(Cookies.get("user"));
 		};
 		getUid();
 	}, []);
+
+	const addMessage = async () => {
+		setMessage("");
+		await addDoc(collection(db, "Messages"), {
+			author: userUid,
+			createdAt: serverTimestamp(),
+			text: message,
+		});
+	};
+
 	return (
 		<div className="w-full h-screen ">
-			<header className="border-b-2 bg-accent border-black py-4 items-center px-10 flex ">
+			<header className="border-b-2 bg-accent border-black py-4 items-center px-10 flex sticky top-0">
 				<span className="text-4xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
 				<button
 					onClick={() => {
@@ -26,19 +51,29 @@ export default function Chat() {
 			</header>
 
 			<main className="p-10 bg-gray min-h-full flex flex-col">
-				<Message owns={false} />
-				<Message owns={true} />
-				<Message owns={false} />
+				{messages.map((msg) => (
+					<Message text={msg.text} owns={msg.author === userUid} uid={msg.author} key={msg.text + msg.author + Math.random()} />
+				))}
 			</main>
+
+			<form className="sticky bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
+				<input className="text-lg px-6 py-3 grow bg-gray-200" value={message} onChange={(e) => setMessage(e.target.value)} />
+				<button type="submit" className="bg-accent px-5 py-2">
+					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white">
+						<path d="M4.75 33.583V23.417L17.958 20 4.75 16.5V6.417L37 20Z" />
+					</svg>
+				</button>
+			</form>
+			<iframe name="hiddenFrame" width="0" height="0" border="0" title="Form hidden frame"></iframe>
 		</div>
 	);
 }
 
-function Message({ owns }) {
+function Message({ owns, uid, text }) {
 	return (
-		<div className={`flex mb-10 ${owns ? "self-end flex-row-reverse" : "self-start flex-row"}`}>
-			<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${Math.random()}`} />
-			<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}></span>
+		<div className={`flex mb-7 ${owns ? "self-end flex-row-reverse" : "self-start flex-row"}`}>
+			<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${uid}`} />
+			<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{text}</span>
 		</div>
 	);
 }
