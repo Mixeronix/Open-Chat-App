@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import app from "./InitFirebase";
-import { getFirestore, collection, addDoc, serverTimestamp, orderBy, limit, query, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp, orderBy, limit, query, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 
 const db = getFirestore(app);
 
@@ -20,7 +20,7 @@ export default function Chat() {
 		onSnapshot(query(collection(db, "Messages"), orderBy("createdAt", "desc"), limit(50)), (querySnapshot) => {
 			const messages = [];
 			querySnapshot.forEach((doc) => {
-				messages.unshift(doc.data());
+				messages.unshift({ data: doc.data(), id: doc.id });
 			});
 			setMessages(messages);
 			scroll.current.scrollIntoView({ behavior: "smooth" });
@@ -59,10 +59,11 @@ export default function Chat() {
 			<main className="px-3 md:px-6 lg:px-7 py-14 md:py-20 bg-gray min-h-full flex flex-col">
 				{messages.map((msg, index) => (
 					<Message
-						sameAuthor={index !== 0 ? messages[index].author === messages[index - 1].author : false}
-						owns={msg.author === userUid}
-						msg={msg}
-						key={msg.text + msg.author + Math.random()}
+						sameAuthor={index !== 0 ? messages[index].data.author === messages[index - 1].data.author : false}
+						owns={msg.data.author === userUid}
+						msg={msg.data}
+						id={msg.id}
+						key={msg.data.text + msg.author + Math.random()}
 					/>
 				))}
 				<div ref={scroll}></div>
@@ -86,7 +87,11 @@ export default function Chat() {
 	);
 }
 
-function Message({ owns, msg, sameAuthor }) {
+function Message({ owns, msg, sameAuthor, id }) {
+	const deleteMessage = async () => {
+		await deleteDoc(doc(db, "Messages", id));
+	};
+
 	const timeConverter = (UNIX_timestamp) => {
 		var a = new Date(UNIX_timestamp * 1000);
 		var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -101,7 +106,7 @@ function Message({ owns, msg, sameAuthor }) {
 
 	if (sameAuthor) {
 		return (
-			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
 				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
 				<span
 					className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl break-words text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
@@ -110,11 +115,16 @@ function Message({ owns, msg, sameAuthor }) {
 				>
 					{msg.text}
 				</span>
+				{owns ? (
+					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" className="delete scale-50" fill="red" onClick={() => deleteMessage()}>
+						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
+					</svg>
+				) : null}
 			</div>
 		);
 	} else {
 		return (
-			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
 				<img
 					className="h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
 					alt="Users avatar"
@@ -137,6 +147,11 @@ function Message({ owns, msg, sameAuthor }) {
 						{msg.text}
 					</span>
 				</div>
+				{owns ? (
+					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" className="delete scale-50" fill="red" onClick={() => deleteMessage()}>
+						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
+					</svg>
+				) : null}
 			</div>
 		);
 	}
