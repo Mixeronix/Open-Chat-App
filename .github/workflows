@@ -1,10 +1,17 @@
 name: Open chat app
-on: [push]
-env:
-  REACT_APP_API_KEY=AIzaSyAwGxFog20BUXzKLyrT2mbdrmJ3V9zUu6Y
-  REACT_APP_AUTH_DOMAIN=open-chat-lo2-app.firebaseapp.com
-  REACT_APP_PROJECT_ID=open-chat-lo2-app
-  REACT_APP_STPRAGE_BUCKET=open-chat-lo2-app.appspot.com
-  REACT_APP_MESSAGING_SENDER_ID=163455633717
-  REACT_APP_APP_ID=1:163455633717:web:04e5e471e64959e77ee47c
-  REACT_APP_MEASUREMENT_ID=G-8HE5YESM0H
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+jobs:
+  build:
+    env:
+      REACT_APP_API_KEY=AIzaSyAwGxFog20BUXzKLyrT2mbdrmJ3V9zUu6Y
+      REACT_APP_AUTH_DOMAIN=open-chat-lo2-app.firebaseapp.com
+      REACT_APP_PROJECT_ID=open-chat-lo2-app
+      REACT_APP_STPRAGE_BUCKET=open-chat-lo2-app.appspot.com
+      REACT_APP_MESSAGING_SENDER_ID=163455633717
+      REACT_APP_APP_ID=1:163455633717:web:04e5e471e64959e77ee47c
+      REACT_APP_MEASUREMENT_ID=G-8HE5YESM0H
