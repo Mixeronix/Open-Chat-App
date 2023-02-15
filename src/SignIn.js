@@ -19,9 +19,12 @@ export default function SignIn() {
 
 	return (
 		<div className="bg-gray w-full h-screen grid place-items-center">
-			<h1 className="text-6xl text-gray-100 font-extrabold text-center ">Open Chat</h1>
+			<h1 className="text-5xl md:text-8xl text-gray-100 font-extrabold text-center ">Open Chat</h1>
 
-			<button className="sign-in bg-accent text-white px-16 py-14 text-5xl font-bold rounded-lg" onClick={signInWithGoogle}>
+			<button
+				className="sign-in bg-accent text-white px-10  md:px-16 py-7  sm:py-10 md:py-14 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold rounded-lg"
+				onClick={signInWithGoogle}
+			>
 				Zaloguj się z Google
 			</button>
 		</div>

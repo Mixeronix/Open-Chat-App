@@ -77,8 +77,8 @@ function Message({ owns, msg, sameAuthor }) {
 	if (sameAuthor) {
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
-				<div className="h-12 p-3 w-12"> </div>
-				<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
+				<div className="h-12 p-3 w-12 inline-block"> </div>
+				<span className={`p-3 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
 			</div>
 		);
 	} else {
@@ -96,13 +96,15 @@ function Message({ owns, msg, sameAuthor }) {
 		};
 		return (
 			<div className={`flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
-				<img className="h-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`} />
+				<img className="h-12 w-12 p-3 rounded-xl bg-gray-200" alt="Users avatar" src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`} />
 
 				<div className="flex flex-col relative ">
 					<span className={`text-gray-300 px-3 pb-1 whitespace-nowrap text-xs opacity-70  absolute -top-5 ${owns ? "self-end" : "self-start"} `}>
 						{timeConverter(msg.createdAt.seconds)}
 					</span>
-					<span className={`p-3 max-w-md text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>{msg.text}</span>
+					<span className={`p-3  max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-white bg-accent mx-3 ${owns ? "rounded-right" : "rounded-left"}`}>
+						{msg.text}
+					</span>
 				</div>
 			</div>
 		);
