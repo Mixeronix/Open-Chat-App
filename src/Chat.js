@@ -89,8 +89,7 @@ function Message({ owns, msg, sameAuthor }) {
 		var date = a.getDate();
 		var hour = a.getHours();
 		var min = a.getMinutes();
-		var sec = a.getSeconds();
-		var time = hour + ":" + min + ":" + sec + " | " + date + " " + month + " " + year;
+		var time = hour + ":" + min + " | " + date + " " + month + " " + year;
 		return time;
 	};
 
@@ -117,7 +116,11 @@ function Message({ owns, msg, sameAuthor }) {
 				/>
 
 				<div className="flex flex-col relative">
-					<span className={`invisible sm:visible text-gray-300 px-3 pb-1 whitespace-nowrap text-xs opacity-70 absolute -top-5 ${owns ? "self-end" : "self-start"} `}>
+					<span
+						className={`text-xxs md:text-xs text-gray-300 px-3 pb-1 whitespace-nowrap opacity-50 sm:opacity-70 absolute -top-3 md:-top-5 ${
+							owns ? "self-end" : "self-start"
+						} `}
+					>
 						{timeConverter(msg.createdAt.seconds)}
 					</span>
 					<span
