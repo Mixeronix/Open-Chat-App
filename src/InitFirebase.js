@@ -2,13 +2,14 @@ import { initializeApp } from "firebase/app";
 // import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-	apiKey: process.env.REACT_APP_API_KEY,
-	authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-	projectId: process.env.REACT_APP_PROJECT_ID,
-	storageBucket: process.env.REACT_APP_STPRAGE_BUCKET,
-	messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-	appId: process.env.REACT_APP_APP_ID,
-	measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+	apiKey: "AIzaSyAwGxFog20BUXzKLyrT2mbdrmJ3V9zUu6Y",
+	authDomain: "open-chat-lo2-app.firebaseapp.com",
+	databaseURL: "https://open-chat-lo2-app-default-rtdb.firebaseio.com",
+	projectId: "open-chat-lo2-app",
+	storageBucket: "open-chat-lo2-app.appspot.com",
+	messagingSenderId: "163455633717",
+	appId: "1:163455633717:web:04e5e471e64959e77ee47c",
+	measurementId: "G-8HE5YESM0H",
 };
 
 const app = initializeApp(firebaseConfig);
