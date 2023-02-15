@@ -46,10 +46,17 @@
 	}
 
 	.delete {
-		visibility: hidden;
+		opacity: 0;
+	}
+	.user-avatar {
+		opacity: 1;
+		transition: all 0.15s ease;
 	}
 
 	.message:hover .delete {
-		visibility: visible;
+		opacity: 1;
+	}
+	.message:hover .user-avatar {
+		opacity: 0;
 	}
 }

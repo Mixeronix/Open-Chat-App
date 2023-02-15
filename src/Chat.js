@@ -106,17 +106,26 @@ function Message({ owns, msg, sameAuthor, id }) {
 
 	if (sameAuthor) {
 		return (
-			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-1 relative`}>
 				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
+
 				<span
-					className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl break-words text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
+					className={`p-2 sm:p-3 break-words max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl  text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm  ${
 						owns ? "rounded-right" : "rounded-left"
 					}`}
 				>
 					{msg.text}
 				</span>
+
 				{owns ? (
-					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" className="delete scale-50" fill="red" onClick={() => deleteMessage()}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						height="48"
+						width="48"
+						className="delete scale-50 absolute top-0 right-0 "
+						fill="red"
+						onClick={() => deleteMessage()}
+					>
 						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
 					</svg>
 				) : null}
@@ -124,23 +133,23 @@ function Message({ owns, msg, sameAuthor, id }) {
 		);
 	} else {
 		return (
-			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} ${sameAuthor ? "mt-1" : "mt-7"}`}>
+			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-7 relative`}>
 				<img
-					className="h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
+					className="user-avatar z-10 h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
 					alt="Users avatar"
 					src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`}
 				/>
 
 				<div className="flex flex-col relative">
 					<span
-						className={`text-xxs md:text-xs text-gray-300 px-3 pb-1 whitespace-nowrap opacity-50 sm:opacity-70 absolute -top-3 md:-top-5 ${
+						className={`text-xxs h-0 md:text-xs text-gray-300 px-3 pb-1 whitespace-nowrap opacity-50 sm:opacity-70 absolute -top-3 md:-top-5 ${
 							owns ? "self-end" : "self-start"
 						} `}
 					>
 						{timeConverter(msg.createdAt.seconds)}
 					</span>
 					<span
-						className={`p-2 sm:p-3 max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl  text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
+						className={`p-2 sm:p-3 break-words max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
 							owns ? "rounded-right" : "rounded-left"
 						}`}
 					>
@@ -148,7 +157,14 @@ function Message({ owns, msg, sameAuthor, id }) {
 					</span>
 				</div>
 				{owns ? (
-					<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" className="delete scale-50" fill="red" onClick={() => deleteMessage()}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						height="48"
+						width="48"
+						className="delete scale-50 absolute top-0 right-0 p-1 delay-200"
+						fill="red"
+						onClick={() => deleteMessage()}
+					>
 						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
 					</svg>
 				) : null}
