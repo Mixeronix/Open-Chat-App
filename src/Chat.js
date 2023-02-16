@@ -40,6 +40,18 @@ export default function Chat() {
 		}
 	};
 
+	const newLine = (index) => {
+		if (index === 0) return true;
+		const time = () => {
+			const time = new Date((messages[index].data.createdAt.seconds - messages[index - 1].data.createdAt.seconds) * 1000);
+
+			return time.getMinutes() > 10;
+		};
+
+		if (messages[index].data.author !== messages[index - 1].data.author || (messages[index].data.createdAt != null ? time() : false)) return true;
+		else return false;
+	};
+
 	return (
 		<div className="w-full h-screen ">
 			<header className="border-b-2 bg-accent border-black py-1 md:py-3 lg:py-4 items-center px-4 md:px-7 lg:px-10 flex fixed left-0 right-0 z-50 top-0">
@@ -58,13 +70,7 @@ export default function Chat() {
 
 			<main className="px-3 md:px-6 lg:px-7 py-14 md:py-20 bg-gray min-h-full flex flex-col">
 				{messages.map((msg, index) => (
-					<Message
-						sameAuthor={index !== 0 ? messages[index].data.author === messages[index - 1].data.author : false}
-						owns={msg.data.author === userUid}
-						msg={msg.data}
-						id={msg.id}
-						key={msg.data.text + msg.author + Math.random()}
-					/>
+					<Message newLine={newLine(index)} owns={msg.data.author === userUid} msg={msg.data} id={msg.id} key={msg.data.text + msg.author + Math.random()} />
 				))}
 				<div ref={scroll}></div>
 			</main>
@@ -87,7 +93,7 @@ export default function Chat() {
 	);
 }
 
-function Message({ owns, msg, sameAuthor, id }) {
+function Message({ owns, msg, newLine, id }) {
 	const deleteMessage = async () => {
 		await deleteDoc(doc(db, "Messages", id));
 	};
@@ -99,12 +105,13 @@ function Message({ owns, msg, sameAuthor, id }) {
 		var month = months[a.getMonth()];
 		var date = a.getDate();
 		var hour = a.getHours();
+
 		var min = a.getMinutes();
-		var time = hour + ":" + min + " | " + date + " " + month + " " + year;
+		var time = (hour < 10 ? "0" + hour.toString() : hour) + ":" + (min < 10 ? "0" + min.toString() : min) + " | " + date + " " + month + " " + year;
 		return time;
 	};
 
-	if (sameAuthor) {
+	if (!newLine) {
 		return (
 			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-1 relative`}>
 				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
@@ -133,7 +140,7 @@ function Message({ owns, msg, sameAuthor, id }) {
 		);
 	} else {
 		return (
-			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-7 relative`}>
+			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-10 relative`}>
 				<img
 					className="user-avatar h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
 					alt="Users avatar"
