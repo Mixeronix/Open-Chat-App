@@ -1,6 +1,5 @@
 import React from "react";
 import app from "./InitFirebase";
-
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Cookies from "js-cookie";
 

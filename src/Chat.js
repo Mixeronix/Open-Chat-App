@@ -22,8 +22,8 @@ export default function Chat() {
 			querySnapshot.forEach((doc) => {
 				messages.unshift({ data: doc.data(), id: doc.id });
 			});
-			setMessages(messages);
 			scroll.current.scrollIntoView({ behavior: "smooth" });
+			setMessages(messages);
 		});
 	}, []);
 
@@ -117,7 +117,7 @@ function Message({ owns, msg, newLine, id }) {
 				<div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-1 sm:p-2 md:p-3 inline-block"></div>
 
 				<span
-					className={`p-2 sm:p-3 break-words max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl  text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm  ${
+					className={`p-2 sm:p-3 break-words max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
 						owns ? "rounded-right" : "rounded-left"
 					}`}
 				>
@@ -142,7 +142,7 @@ function Message({ owns, msg, newLine, id }) {
 		return (
 			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-10 relative`}>
 				<img
-					className="user-avatar h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
+					className={`${owns ? "user-avatar" : null} h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200`}
 					alt="Users avatar"
 					src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`}
 				/>
