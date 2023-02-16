@@ -54,7 +54,7 @@ export default function Chat() {
 
 	return (
 		<div className="w-full h-screen ">
-			<header className="border-b-2 bg-accent border-black py-1 md:py-3 lg:py-4 items-center px-4 md:px-7 lg:px-10 flex fixed left-0 right-0 z-50 top-0">
+			<header className="bg-accent py-1 md:py-3 lg:py-4 items-center px-4 md:px-7 lg:px-10 flex fixed left-0 right-0 z-50 top-0">
 				<span className="text-2xl md:text-3xl lg:text-4xl text-gray-100 font-bold text-center m-auto">Open Chat</span>
 				<button
 					onClick={() => {
@@ -68,24 +68,22 @@ export default function Chat() {
 				</button>
 			</header>
 
-			<main className="px-3 md:px-6 lg:px-7 py-14 md:py-20 bg-gray min-h-full flex flex-col">
+			<main className="px-3 md:px-6 lg:px-7 py-14 md:py-16 bg-gray min-h-full flex flex-col">
 				{messages.map((msg, index) => (
 					<Message newLine={newLine(index)} owns={msg.data.author === userUid} msg={msg.data} id={msg.id} key={msg.data.text + msg.author + Math.random()} />
 				))}
-				<div ref={scroll}></div>
 			</main>
+			<div ref={scroll}></div>
 
-			<form className="fixed left-0 right-0 z-50 bottom-0 flex flex-row" onSubmit={() => addMessage()} target="hiddenFrame">
+			<form className="fixed left-0 right-0 z-50 bottom-0 flex flex-row m-3" onSubmit={() => addMessage()} target="hiddenFrame">
 				<input
-					className=" px-3 md:px-5 lg:px-6 py-4 h-fit grow bg-gray-200 text-sm lg:text-lg"
+					className="rounded-3xl px-3 md:px-5 py-2.5 lg:px-6 h-full grow mr-4 md:mr-8 lg:mr-10 bg-gray-200 text-sm lg:text-lg"
 					maxLength={1000}
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 				/>
-				<button type="submit" className={`${!message.trim() ? "bg-gray-500" : "bg-accent"} transition-all px-3  py-1 md:px-4`}>
-					<svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" fill="white" className="scale-75 md:scale-75">
-						<path d="M4.75 33.583V23.417L17.958 20 4.75 16.5V6.417L37 20Z" />
-					</svg>
+				<button type="submit" className={`${!message.trim() ? "bg-gray-500" : "bg-accent"} flex aspect-auto  rounded-3xl transition-all p-2 lg:p-3`}>
+					<span className="send material-symbols-outlined text-white self-center">send</span>
 				</button>
 			</form>
 			<iframe name="hiddenFrame" width="0" height="0" border="0" title="Form hidden frame"></iframe>
@@ -126,14 +124,15 @@ function Message({ owns, msg, newLine, id }) {
 
 				{owns ? (
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="48"
-						width="48"
-						className="delete scale-50 absolute top-0 right-0 "
 						fill="red"
 						onClick={() => deleteMessage()}
+						className="delete absolute center top-0 right-0 p-1 lg:p-2.5 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 "
+						xmlns="http://www.w3.org/2000/svg"
+						height="24"
+						viewBox="0 96 960 960"
+						width="24"
 					>
-						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
+						<path d="M280 936q-33 0-56.5-23.5T200 856V336h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680 936H280Zm80-160h80V416h-80v360Zm160 0h80V416h-80v360Z" />
 					</svg>
 				) : null}
 			</div>
@@ -142,9 +141,15 @@ function Message({ owns, msg, newLine, id }) {
 		return (
 			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-10 relative`}>
 				<img
-					className={`${owns ? "user-avatar" : null} h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200`}
+					className={`${owns ? "user-avatar" : null} h-8 sm:h-10 lg:h-12 bg-gray-200 rounded-xl ${
+						msg.author !== "iHUIItbTbsT7hqV8eenRoSSybPf1" ? `p-1 sm:p-2 md:p-3` : null
+					}`}
 					alt="Users avatar"
-					src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`}
+					src={
+						msg.author !== "iHUIItbTbsT7hqV8eenRoSSybPf1"
+							? `https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`
+							: "https://cdn.discordapp.com/avatars/675751481277677598/52d4a498e13b0877a244ad78fc77366d?size=512"
+					}
 				/>
 
 				<div className="flex flex-col relative">
@@ -153,7 +158,7 @@ function Message({ owns, msg, newLine, id }) {
 							owns ? "self-end" : "self-start"
 						} `}
 					>
-						{timeConverter(msg.createdAt.seconds)}
+						{msg.createdAt != null ? timeConverter(msg.createdAt.seconds) : null}
 					</span>
 					<span
 						className={`p-2 sm:p-3 break-words max-w-xxs sm:max-w-md md:max-w-lg lg:max-w-xl text-white bg-accent mx-2 md:mx-3 text-xs sm:text-sm lg:text-base ${
@@ -165,14 +170,15 @@ function Message({ owns, msg, newLine, id }) {
 				</div>
 				{owns ? (
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="48"
-						width="48"
-						className="delete scale-50 absolute top-0 right-0 p-1 delay-200"
 						fill="red"
 						onClick={() => deleteMessage()}
+						className="delete absolute center top-0 right-0 p-1 lg:p-2.5 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 "
+						xmlns="http://www.w3.org/2000/svg"
+						height="24"
+						viewBox="0 96 960 960"
+						width="24"
 					>
-						<path d="M13.05 42q-1.2 0-2.1-.9-.9-.9-.9-2.1V10.5H8v-3h9.4V6h13.2v1.5H40v3h-2.05V39q0 1.2-.9 2.1-.9.9-2.1.9Zm5.3-7.3h3V14.75h-3Zm8.3 0h3V14.75h-3Z" />
+						<path d="M280 936q-33 0-56.5-23.5T200 856V336h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680 936H280Zm80-160h80V416h-80v360Zm160 0h80V416h-80v360Z" />
 					</svg>
 				) : null}
 			</div>
