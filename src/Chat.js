@@ -135,7 +135,7 @@ function Message({ owns, msg, sameAuthor, id }) {
 		return (
 			<div className={`message flex ${owns ? "self-end flex-row-reverse" : "self-start flex-row"} mt-7 relative`}>
 				<img
-					className="user-avatar z-10 h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
+					className="user-avatar h-8 sm:h-10 lg:h-12 p-1 sm:p-2 md:p-3 rounded-xl bg-gray-200"
 					alt="Users avatar"
 					src={`https://api.dicebear.com/5.x/identicon/svg?seed=${msg.author}`}
 				/>
